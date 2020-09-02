@@ -31,6 +31,8 @@ class TodoAPIView(APIView):
         description = request.data['description']
 
         # check if request is suitable to create model
+        TodoController.add(title=title, description=description)
+
 
         return title, description
 
