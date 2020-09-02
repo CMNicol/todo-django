@@ -1,11 +1,17 @@
 # Todo API
 
-Django API to add, remove and retrieve to-do's from a PostgreSQL database.
+Django API to add, remove and retrieve todo's from a PostgreSQL database.
 
-## Docker implementation
+## Docker Implementation
 Django server and PostgreSQL database set up in docker-compose.yml for local development.
 See settings.py for the Django db configuration. 
 See docker-compose.yml for the Docker db container configuration.
+
+## To Run In Docker
+* Open a terminal and `cd` to the project root
+* Run `docker-compose build` to build the django-api service from the Dockerfile
+* Run `docker-compose run django-api python manage.py migrate` to run the database migrations and setup the database.
+* Run `docker-compose up` to run the container.
 
 ## Routes
 * `GET /retrieve/`: Gets a list of  all todos in database, with some summary information.
