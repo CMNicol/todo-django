@@ -8,25 +8,31 @@ from django.http import JsonResponse
 from pydantic import parse_obj_as
 from typing import List
 from django.core import serializers
-
-
+from .controller import TodoController
 
 
 class TodoAPIView(APIView):
 
     def post(self, request: Request) -> Response:
-        todo_id = request.data['id']
-        todo = TodoItem.objects.get(id=todo_id)
-        # serializer = TodoItemSerializer(data=TodoItem.objects.get(id=todo_id))
-        # return JsonResponse(request.data, safe=False)
-        return Response({"todo": todo})
+
+        title, description = self.validate_post_request(request)
+
+        return Response({"todo": title})
 
     def get(self, request):
-        todos = TodoItem.objects.values()
-        return Response({"todos": todos})
 
+        controller = TodoController()
+        return Response({"number of todos": controller.total, "number complete": controller.complete,
+                         "number incomplete": controller.incomplete, "todos": controller.todos})
 
+    @staticmethod
+    def validate_post_request(request: Request) -> (str, str):
+        title = request.data['title']
+        description = request.data['description']
 
+        # check if request is suitable to create model
+
+        return title, description
 
 
     # def post(self, request: Request):
