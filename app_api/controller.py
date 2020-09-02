@@ -16,4 +16,8 @@ class TodoController:
         )
         todo.save()
 
+    @staticmethod
+    def remove(id: int):
+        TodoItem.objects.filter(id=id).delete()
+
 

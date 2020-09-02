@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app_api.urls')),
     path('add/', views.TodoAPIView.as_view()),
+    path('remove/', views.DeleteAPIView.as_view()),
 ]
