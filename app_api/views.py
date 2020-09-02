@@ -11,6 +11,16 @@ from django.core import serializers
 from .controller import TodoController
 
 
+class RetrieveAPIView(APIView):
+
+    def get(self, request):
+
+        controller = TodoController()
+        return Response({"number of todos": controller.total, "number complete": controller.complete,
+                         "number incomplete": controller.incomplete, "todos": controller.todos})
+
+
+
 class DeleteAPIView(APIView):
 
     def post(self, request: Request) -> Response:
@@ -32,7 +42,7 @@ class DeleteAPIView(APIView):
         return idn
 
 
-class TodoAPIView(APIView):
+class AddAPIView(APIView):
 
     def post(self, request: Request) -> Response:
 
@@ -46,11 +56,7 @@ class TodoAPIView(APIView):
         except:
             return Response("an error occurred adding todo to the db")
 
-    def get(self, request):
 
-        controller = TodoController()
-        return Response({"number of todos": controller.total, "number complete": controller.complete,
-                         "number incomplete": controller.incomplete, "todos": controller.todos})
 
     @staticmethod
     def validate_post_request(request: Request) -> (str, str):

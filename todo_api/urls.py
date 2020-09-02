@@ -20,6 +20,7 @@ from app_api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app_api.urls')),
-    path('add/', views.TodoAPIView.as_view()),
+    path('add/', views.AddAPIView.as_view()),
     path('remove/', views.DeleteAPIView.as_view()),
+    path('retrieve/', views.RetrieveAPIView.as_view()),
 ]
