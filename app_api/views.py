@@ -1,13 +1,8 @@
-from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from .serializers import TodoItemSerializer
 from .models import TodoItem
-from django.http import JsonResponse
-from pydantic import parse_obj_as
-from typing import List
-from django.core import serializers
 from .controller import TodoController
 from rest_framework.exceptions import ValidationError
 
