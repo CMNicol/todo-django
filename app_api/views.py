@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from .serializers import TodoItemSerializer
+from rest_framework.serializers import ValidationError as SerialValError
 from .models import TodoItem
 from .controller import TodoController
 from rest_framework.exceptions import ValidationError
@@ -19,6 +20,12 @@ class RetrieveAPIView(APIView):
 class DeleteAPIView(APIView):
 
     def post(self, request: Request) -> Response:
+        """
+        Format of request:
+        {
+            "id": 1,
+        }
+        """
 
         # does the 'id' key exist in the request?
         try:
@@ -37,6 +44,13 @@ class DeleteAPIView(APIView):
 class AddAPIView(APIView):
 
     def post(self, request: Request) -> Response:
+        """
+        Format of request:
+        {
+            "title": "to do title",
+            "description": "blah blah",
+        }
+        """
 
         # instantiate a serializer
         serializer = TodoItemSerializer(data=request.data)
@@ -47,46 +61,29 @@ class AddAPIView(APIView):
         else:
             raise ValidationError('Data could not be serialized to fit TodoItem model')
 
+
 class EditAPIView(APIView):
 
-    def get_object(self, pk):
-        try:
-            return TodoItem.objects.get(id=pk)
-        except TodoItem.DoesNotExist:
-            raise Http404
-
-
-
     def post(self, request: Request):
-        """
-        Format of request
 
+        """
+        Format of request:
         {
             "id": 1,
             "<field to edit>": "blah blah",
             "<another field to edit>": "blah blah"
         }
-
         """
         try:
             idn = request.data['id']
-            instance = self.get_object(pk=idn)
-            instance.title = request.data['title']
-            instance.description = request.data['description']
-
-            instance.save(update_fields=['title', 'description'])
-
-
-            return Response('\'id\' key found')
+            instance = TodoItem.objects.get(id=idn)
+            serializer = TodoItemSerializer(instance=instance, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response('Todo with id = {} edited successfully'.format(idn))
         except KeyError:
-            return Response('\'id\' key not found')
-
-
-
-
-
-
-
-
-
-
+            raise ValidationError('\'id\' key not found')
+        except SerialValError:
+            raise ValidationError('Serialization error')
+        except TodoItem.DoesNotExist:
+            raise ValidationError('Todo with id = {} not found'.format(idn))
