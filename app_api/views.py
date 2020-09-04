@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -45,3 +46,47 @@ class AddAPIView(APIView):
             return Response(['Model saved successfully'])
         else:
             raise ValidationError('Data could not be serialized to fit TodoItem model')
+
+class EditAPIView(APIView):
+
+    def get_object(self, pk):
+        try:
+            return TodoItem.objects.get(id=pk)
+        except TodoItem.DoesNotExist:
+            raise Http404
+
+
+
+    def post(self, request: Request):
+        """
+        Format of request
+
+        {
+            "id": 1,
+            "<field to edit>": "blah blah",
+            "<another field to edit>": "blah blah"
+        }
+
+        """
+        try:
+            idn = request.data['id']
+            instance = self.get_object(pk=idn)
+            instance.title = request.data['title']
+            instance.description = request.data['description']
+
+            instance.save(update_fields=['title', 'description'])
+
+
+            return Response('\'id\' key found')
+        except KeyError:
+            return Response('\'id\' key not found')
+
+
+
+
+
+
+
+
+
+
