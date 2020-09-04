@@ -50,3 +50,11 @@ Request format:
     "id": 1
 }
 ```
+* `POST /edit/`: Edit a todo. Specifying id, and any fields to be updated. Request format:
+```json
+{
+    "id": 1,
+    "<field to edit>": "blah blah",
+    "<another field to edit>": "blah blah"
+}
+```
