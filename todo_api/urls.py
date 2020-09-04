@@ -23,4 +23,5 @@ urlpatterns = [
     path('add/', views.AddAPIView.as_view()),
     path('remove/', views.DeleteAPIView.as_view()),
     path('retrieve/', views.RetrieveAPIView.as_view()),
+    path('edit/', views.EditAPIView.as_view()),
 ]

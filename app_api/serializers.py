@@ -33,5 +33,5 @@ class TodoItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TodoItem
-        fields = ['title', 'description']
+        fields = ['title', 'description', 'status']
 
