@@ -9,67 +9,44 @@ from pydantic import parse_obj_as
 from typing import List
 from django.core import serializers
 from .controller import TodoController
+from rest_framework.exceptions import ValidationError
 
 
 class RetrieveAPIView(APIView):
 
     def get(self, request):
-
         controller = TodoController()
         return Response({"number of todos": controller.total, "number complete": controller.complete,
                          "number incomplete": controller.incomplete, "todos": controller.todos})
 
 
-
 class DeleteAPIView(APIView):
 
     def post(self, request: Request) -> Response:
-        idn = self.validate_post_request(request)
 
+        # does the 'id' key exist in the request?
         try:
-            TodoController.remove(id=idn)
-            return Response("todo removed successfully")
-        except:
-            return Response("an error occurred removing todo from the db")
+            idn = request.data['id']
+        except KeyError:
+            return Response('\'id\' key not found')
 
-    @staticmethod
-    def validate_post_request(request: Request) -> int:
-
-        idn = request.data['id']
-
-        # todo check if request is suitable to create model
-
-        return idn
+        # is the 'id' of type int?
+        if type(idn) is int:
+            TodoItem.objects.filter(id=idn).delete()
+            return Response(['Todo with id = {} deleted successfully'.format(idn)])
+        else:
+            raise ValidationError('No \'id\' field found in request')
 
 
 class AddAPIView(APIView):
 
     def post(self, request: Request) -> Response:
 
-        # retrieve and validate data from request
-        title, description = self.validate_post_request(request)
-
-        # add to db
-        try:
-            TodoController.add(title=title, description=description)
-            return Response("todo added successfully")
-        except:
-            return Response("an error occurred adding todo to the db")
-
-
-
-    @staticmethod
-    def validate_post_request(request: Request) -> (str, str):
-        title = request.data['title']
-        description = request.data['description']
-
-        # todo check if request is suitable to create model
-
-        return title, description
-
-    # def post(self, request: Request):
-    #     serializer = TodoItemSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-    #     return Response(serializer.errors)
+        # instantiate a serializer
+        serializer = TodoItemSerializer(data=request.data)
+        # validate the request, save if valid, raise ValidationError if invalid
+        if serializer.is_valid():
+            serializer.save()
+            return Response(['Model saved successfully'])
+        else:
+            raise ValidationError('Data could not be serialized to fit TodoItem model')
