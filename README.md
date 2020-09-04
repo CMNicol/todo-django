@@ -14,7 +14,7 @@ See docker-compose.yml for the Docker db container configuration.
 * Run `docker-compose up` to run the container.
 
 ## Routes
-* `GET /retrieve/`: Gets a list of  all todos in database, with some summary information.
+* `GET /retrieve/`: Gets a list of  all todos in database, with some summary information. Response format:
 ```json
 {
     "number of todos": 2,
@@ -37,13 +37,14 @@ See docker-compose.yml for the Docker db container configuration.
 }
 ```
 * `POST /add/`: Adds a new todo to the database with title and description.
+Request format:
 ```json
 {
     "title": "Todo Numer 3",
     "description": "Description 3"
 }
 ```
-* `POST /remove/`: Removes a todo, with specified id, from the database.
+* `POST /remove/`: Removes a todo, with specified id, from the database. Request format:
 ```json
 {
     "id": 1
