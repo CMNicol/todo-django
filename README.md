@@ -6,6 +6,7 @@ Django API to add, remove and retrieve todo's from a PostgreSQL database.
 Django server and PostgreSQL database set up in docker-compose.yml for local development.
 See settings.py for the Django db configuration. 
 See docker-compose.yml for the Docker db container configuration.
+As per the compose.yml file, the Django app is mapped to port 8000, and the database to port 5432.
 
 ## To Run In Docker
 * Open a terminal and `cd` to the project root
@@ -14,6 +15,9 @@ See docker-compose.yml for the Docker db container configuration.
 * Run `docker-compose up` to run the container.
 
 ## Routes
+
+In the default project configuration, these routes will be accessible at `http://127.0.0.1:8000/<route>/`
+
 * `GET /retrieve/`: Gets a list of  all todos in database, with some summary information. Response format:
 ```json
 {
